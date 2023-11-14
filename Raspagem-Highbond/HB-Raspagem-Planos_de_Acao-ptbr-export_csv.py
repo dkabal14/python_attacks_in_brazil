@@ -182,13 +182,15 @@ else:
 
 altPrint('Autenticando no portal: ')
 try:
+    # Aguarda os campos ficarem visíveis
+    WebDriverWait(objNavigator, 30000).until(expected_conditions.visibility_of_element_located((By.ID, "user_email")))
     # Insere Usuário
     objNavigator.find_element(By.ID, "user_email").send_keys(username)
     # Insere Senha
     objNavigator.find_element(By.ID, "user_password").send_keys(password)
     # Autentica no portal
     objNavigator.find_element(By.NAME, "commit").click()
-    # Verifica se está logado
+    # Checa o sucesso do logon, se não identificar um objeto que só aparece quando logado, levanta um erro do selenium.
     element = objNavigator.find_element(By.LINK_TEXT, "Relatórios")
 
 except:
@@ -342,12 +344,18 @@ nomeNovoBase = f'{ResultadoPath}\\Planos de Ação {currDate}.{extensaoArquivo}'
 i = 2
 sair = False
 if os.path.exists(nomeNovoBase):
-    while sair != True:
-        if os.path.exists(f'{ResultadoPath}\\Planos de Ação {currDate} ({i}).{extensaoArquivo}'):
-            i = i + 1
-        else:
-            nomeNovo = f'{ResultadoPath}\\Planos de Ação {currDate} ({i}).{extensaoArquivo}'
-            sair = True
+    # Esse bloco deleta o arquivo do dia se existir para criar um atualizado
+    os.remove(nomeNovoBase)
+    nomeNovo = nomeNovoBase
+
+    # Substituindo o algoritmo de cima por esse, faz com que os arquivos de resultados não sejam substituídos durante a cópia do arquivo baixado durante a rotina
+    #=============================================================================
+    # while sair != True:
+    #     if os.path.exists(f'{ResultadoPath}\\Planos de Ação {currDate} ({i}).{extensaoArquivo}'):
+    #         i = i + 1
+    #     else:
+    #         nomeNovo = f'{ResultadoPath}\\Planos de Ação {currDate} ({i}).{extensaoArquivo}'
+    #         sair = True
 else:
     nomeNovo = nomeNovoBase
     
