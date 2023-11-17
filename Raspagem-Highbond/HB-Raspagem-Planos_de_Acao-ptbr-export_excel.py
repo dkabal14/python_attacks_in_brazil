@@ -21,8 +21,12 @@ from selenium.webdriver.support.wait import WebDriverWait # Para aguardar a conc
 # ############### VARIAVEIS ################
 # ##########################################
 
-username = input('E-mail: ')
-password = gp.getpass('Senha: ')
+# username = input('E-mail: ')
+# password = gp.getpass('Senha: ')
+
+username = sys.argv[1]
+password = sys.argv[2]
+
 mainURL = 'https://accounts.highbond.com/orgs/26690' # URL da Samarco
 ProcessamentoPath = f'c:\\teste\\Download'
 ResultadoPath = f'c:\\teste\\Resultado'
