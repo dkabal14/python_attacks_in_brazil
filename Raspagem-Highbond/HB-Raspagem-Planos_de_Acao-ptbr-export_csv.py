@@ -23,12 +23,17 @@ from selenium.webdriver.support.wait import WebDriverWait # Para aguardar a conc
 
 username = input('E-mail: ')
 password = gp.getpass('Senha: ')
+
+# username = sys.argv[1]
+# password = sys.argv[2]
+
 mainURL = 'https://accounts.highbond.com/orgs/26690'
-ProcessamentoPath = f'c:\\teste\\Download'
-ResultadoPath = f'c:\\teste\\Resultado'
 relatorio = 'Relatório de Planos de Ação' # - SUCESSO
 currDate = dt.datetime.now().strftime('%d_%m_%Y')
 arquivoLog = f'c:\\teste\\HB-Raspagem-{currDate}.log'
+pasta_raiz = f'c:\\teste\\'
+ProcessamentoPath = f'{pasta_raiz}Download'
+ResultadoPath = f'{pasta_raiz}Resultado'
 
 # #########################################
 # ############ BLOOCO DE DEBUG ############
@@ -191,7 +196,7 @@ try:
     # Autentica no portal
     objNavigator.find_element(By.NAME, "commit").click()
     # Checa o sucesso do logon, se não identificar um objeto que só aparece quando logado, levanta um erro do selenium.
-    element = objNavigator.find_element(By.LINK_TEXT, "Relatórios")
+    element = objNavigator.find_element(By.XPATH, "//a[@href='/orgs/26690/apps/21']")
 
 except:
     altPrint(f'---> Não foi possível autenticar no portal para o usuário: {username}')
@@ -206,7 +211,7 @@ else:
 
 altPrint('Entrando na página de relatórios: ')
 try:
-    objNavigator.find_element(By.LINK_TEXT, "Relatórios").click()
+    objNavigator.find_element(By.XPATH, "//a[@href='/orgs/26690/apps/21']").click()
 except:
     altPrint('---> Não foi possível acessar a página de relatórios')
     altPrint('='*60)
@@ -256,7 +261,7 @@ else:
 
 altPrint('Abrindo dropdownlist de exportação e selecionando a opção de CSV')
 try:
-    objNavigator.find_element(By.XPATH, "//img[@title='Exportar']").click()
+    objNavigator.find_element(By.XPATH, "//td[@id='reportexport']").click()
     objNavigator.find_element(By.XPATH, "//ul/li[1]").click() # Clica em CSV
     # objNavigator.find_element(By.XPATH, "//ul/li[2]").click() # Clica em PDF
     # objNavigator.find_element(By.XPATH, "//ul/li[3]").click() # Clica em Texto

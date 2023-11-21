@@ -28,11 +28,12 @@ username = sys.argv[1]
 password = sys.argv[2]
 
 mainURL = 'https://accounts.highbond.com/orgs/26690' # URL da Samarco
-ProcessamentoPath = f'c:\\teste\\Download'
-ResultadoPath = f'c:\\teste\\Resultado'
 relatorio = 'Relatório de Planos de Ação' # - SUCESSO
 currDate = dt.datetime.now().strftime('%d_%m_%Y')
-arquivoLog = f'c:\\teste\\HB-Raspagem-{currDate}.log'
+pasta_raiz = f'c:\\teste\\'
+arquivoLog = f'{pasta_raiz}HB-Raspagem-{currDate}.log'
+ProcessamentoPath = f'{pasta_raiz}Download'
+ResultadoPath = f'{pasta_raiz}Resultado'
 
 # #########################################
 # ############ BLOOCO DE DEBUG ############
@@ -130,7 +131,6 @@ if not os.path.exists(ResultadoPath): # Cria a pasta de resultados se ela não e
 cfgPrint = Print2(arquivoLog) # Define o arquivo de log
 
 altPrint('='*60)
-altPrint('')
 altPrint('Variáveis nessa sessão:')
 altPrint('='*60)
 altPrint(f'E-mail utilizado: {username}')
@@ -148,7 +148,7 @@ altPrint('Configurando as opções do Edge: ')
 try:
     EdgeOptions = webdriver.EdgeOptions()
     EdgeOptions.add_experimental_option(name='prefs', value={"download.default_directory": ProcessamentoPath}) # Altera a pasta de download do arquivo
-    EdgeOptions.add_experimental_option(name='excludeSwitches', value=['enable-logging']) #Desativa os avisos causados pelo bug do Edge na versão 4.15.2 do Selenium
+    EdgeOptions.add_experimental_option(name='excludeSwitches', value=['enable-logging']) # Desativa os avisos causados pelo bug do Edge na versão 4.15.2 do Selenium
 except:
     altPrint('---> Não foi possível definir as preferências')
     altPrint('='*60)
@@ -196,7 +196,7 @@ try:
     # Autentica no portal
     objNavigator.find_element(By.NAME, "commit").click()
     # Checa o sucesso do logon, se não identificar um objeto que só aparece quando logado, levanta um erro do selenium.
-    element = objNavigator.find_element(By.LINK_TEXT, "Relatórios")
+    element = objNavigator.find_element(By.XPATH, "//a[@href='/orgs/26690/apps/21']")
 
 except:
     altPrint(f'---> Não foi possível autenticar no portal para o usuário: {username}')
@@ -211,7 +211,7 @@ else:
 
 altPrint('Entrando na página de relatórios: ')
 try:
-    objNavigator.find_element(By.LINK_TEXT, "Relatórios").click()
+    objNavigator.find_element(By.XPATH, "//a[@href='/orgs/26690/apps/21']").click()
 except:
     altPrint('---> Não foi possível acessar a página de relatórios')
     altPrint('='*60)
@@ -261,7 +261,7 @@ else:
 
 altPrint('Abrindo dropdownlist de exportação e selecionando a opção de CSV')
 try:
-    objNavigator.find_element(By.XPATH, "//img[@title='Exportar']").click()
+    objNavigator.find_element(By.XPATH, "//td[@id='reportexport']").click()
     # objNavigator.find_element(By.XPATH, "//ul/li[1]").click() # Clica em CSV
     # objNavigator.find_element(By.XPATH, "//ul/li[2]").click() # Clica em PDF
     # objNavigator.find_element(By.XPATH, "//ul/li[3]").click() # Clica em Texto
@@ -318,7 +318,7 @@ try:
 
     altPrint('---> Marcada a opção Aspas Duplas em "Fechamento de Campo"')
     # ================================================================================================================================
-    time.sleep(5)
+    time.sleep(2)
 
     # Clica no botão de download
     objNavigator.find_element(By.XPATH, "//div[@class='exportBtn']/*//span[@class='submitMidHighlightText']").click()
