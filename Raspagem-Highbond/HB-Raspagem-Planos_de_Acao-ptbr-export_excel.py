@@ -32,8 +32,8 @@ relatorio = 'Relatório de Planos de Ação' # - SUCESSO
 currDate = dt.datetime.now().strftime('%d_%m_%Y')
 pasta_raiz = f'c:\\teste\\'
 arquivoLog = f'{pasta_raiz}HB-Raspagem-{currDate}.log'
-ProcessamentoPath = f'{pasta_raiz}Download'
-ResultadoPath = f'{pasta_raiz}Resultado'
+dirDownload = f'{pasta_raiz}Download'
+dirResultado = f'{pasta_raiz}Resultado'
 
 # #########################################
 # ############ BLOOCO DE DEBUG ############
@@ -53,8 +53,8 @@ ResultadoPath = f'{pasta_raiz}Resultado'
 # #########################################
 
 class Print2:
-    def __init__(self, log_file2):
-        self.log_file = log_file2
+    def __init__(self, log_file = 'print2Class_DefaultLog.log'):
+        self.log_file = log_file
 
     def print_and_log(self, data_to_print):
         import datetime as dt
@@ -115,20 +115,21 @@ def get_file_version(path): # Pega a propriedade de versão de um arquivo execut
     version = f'{win32api.HIWORD(ms)}.{win32api.LOWORD(ms)}.{win32api.HIWORD(ls)}.{win32api.LOWORD(ls)}'
     return version
 
-def altPrint(data): # Gera um log dos prints e ao mesmo tempo joga pra tela
-    cfgPrint.print_and_log(data)
+print2 = Print2() # Define o arquivo de log
+print2.log_file = arquivoLog
+
+def altPrint(data):
+    print2.print_and_log(data)
 
 # #########################################
 # ############ DESENVOLVIMENTO ############
 # #########################################
 
-if not os.path.exists(ProcessamentoPath): # Cria a pasta de download se ela não existir
-    os.mkdir(ProcessamentoPath)
+if not os.path.exists(dirDownload): # Cria a pasta de download se ela não existir
+    os.mkdir(dirDownload)
 
-if not os.path.exists(ResultadoPath): # Cria a pasta de resultados se ela não existir
-    os.mkdir(ResultadoPath)
-
-cfgPrint = Print2(arquivoLog) # Define o arquivo de log
+if not os.path.exists(dirResultado): # Cria a pasta de resultados se ela não existir
+    os.mkdir(dirResultado)
 
 altPrint('='*60)
 altPrint('Variáveis nessa sessão:')
@@ -136,8 +137,8 @@ altPrint('='*60)
 altPrint(f'E-mail utilizado: {username}')
 altPrint(f'URL da Organização: {mainURL}')
 altPrint(f'Relatório Alvo: {relatorio}')
-altPrint(f'Pasta de Resultado: {ResultadoPath}')
-altPrint(f'Pasta de Download: {ProcessamentoPath}')
+altPrint(f'Pasta de Resultado: {dirResultado}')
+altPrint(f'Pasta de Download: {dirDownload}')
 altPrint(f'Arquivo de log gerado em: {arquivoLog}')
 altPrint(f'Versão do Selenium Webdriver: {webdriver.__version__}')
 altPrint(f'Versão do Microsoft Edge: {get_file_version("C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe")}')
@@ -147,7 +148,7 @@ altPrint('Configurando as opções do Edge: ')
 
 try:
     EdgeOptions = webdriver.EdgeOptions()
-    EdgeOptions.add_experimental_option(name='prefs', value={"download.default_directory": ProcessamentoPath}) # Altera a pasta de download do arquivo
+    EdgeOptions.add_experimental_option(name='prefs', value={"download.default_directory": dirDownload}) # Altera a pasta de download do arquivo
     EdgeOptions.add_experimental_option(name='excludeSwitches', value=['enable-logging']) # Desativa os avisos causados pelo bug do Edge na versão 4.15.2 do Selenium
 except:
     altPrint('---> Não foi possível definir as preferências')
@@ -336,16 +337,16 @@ time.sleep(10)
 
 # Implementar para a alteração dos arquivos
 # ========================================
-ProcessamentoPathRec = f'{ProcessamentoPath}\\*'
+dirDownloadRec = f'{dirDownload}\\*'
 
-arquivosBaixados = glob.glob(ProcessamentoPathRec)
+arquivosBaixados = glob.glob(dirDownloadRec)
 ultimoArquivoBaixado = max(arquivosBaixados, key=os.path.getctime)
 
 arquivoOrigem = os.path.basename(ultimoArquivoBaixado).split('/')[-1]
 extensaoArquivo = arquivoOrigem.split('.')[-1]
 
-nomeAntigo = f'{ResultadoPath}\\{arquivoOrigem}'
-nomeNovoBase = f'{ResultadoPath}\\Planos de Ação {currDate}.{extensaoArquivo}'
+nomeAntigo = f'{dirResultado}\\{arquivoOrigem}'
+nomeNovoBase = f'{dirResultado}\\Planos de Ação {currDate}.{extensaoArquivo}'
 
 i = 2
 sair = False
@@ -357,17 +358,18 @@ if os.path.exists(nomeNovoBase):
     # Substituindo o algoritmo de cima por esse, faz com que os arquivos de resultados não sejam substituídos durante a cópia do arquivo baixado durante a rotina
     #=============================================================================
     # while sair != True:
-    #     if os.path.exists(f'{ResultadoPath}\\Planos de Ação {currDate} ({i}).{extensaoArquivo}'):
+    #     if os.path.exists(f'{dirResultado}\\Planos de Ação {currDate} ({i}).{extensaoArquivo}'):
     #         i = i + 1
     #     else:
-    #         nomeNovo = f'{ResultadoPath}\\Planos de Ação {currDate} ({i}).{extensaoArquivo}'
+    #         nomeNovo = f'{dirResultado}\\Planos de Ação {currDate} ({i}).{extensaoArquivo}'
     #         sair = True
+    
 else:
     nomeNovo = nomeNovoBase
     
-shutil.copy(ultimoArquivoBaixado, ResultadoPath)
+shutil.copy(ultimoArquivoBaixado, dirResultado)
 os.replace(nomeAntigo, nomeNovo)
-altPrint(f'---> Último arquivo baixado foi copiado da pasta {ProcessamentoPath} para a pasta {ResultadoPath}')
+altPrint(f'---> Último arquivo baixado foi copiado da pasta {dirDownload} para a pasta {dirResultado}')
 altPrint(f'---> O nome do arquivo foi alterado de {arquivoOrigem} para Planos de Ação {nomeNovo}')
 altPrint('='*60)
 altPrint('---> Fim do script')
