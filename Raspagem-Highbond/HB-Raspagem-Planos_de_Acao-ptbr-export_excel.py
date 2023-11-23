@@ -30,7 +30,8 @@ password = sys.argv[2]
 mainURL = 'https://accounts.highbond.com/orgs/26690' # URL da Samarco
 relatorio = 'Relatório de Planos de Ação' # - SUCESSO
 currDate = dt.datetime.now().strftime('%d_%m_%Y')
-pasta_raiz = f'c:\\teste\\'
+currDateTime = dt.datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+pasta_raiz = "D:\\ACL\\Teste_Raspagem\\Raspagem-Highbond\\"
 arquivoLog = f'{pasta_raiz}HB-Raspagem-{currDate}.log'
 dirDownload = f'{pasta_raiz}Download'
 dirResultado = f'{pasta_raiz}Resultado'
@@ -115,8 +116,8 @@ def get_file_version(path): # Pega a propriedade de versão de um arquivo execut
     version = f'{win32api.HIWORD(ms)}.{win32api.LOWORD(ms)}.{win32api.HIWORD(ls)}.{win32api.LOWORD(ls)}'
     return version
 
-print2 = Print2() # Define o arquivo de log
-print2.log_file = arquivoLog
+print2 = Print2()
+print2.log_file = arquivoLog # Define o arquivo de log no output
 
 def altPrint(data):
     print2.print_and_log(data)
@@ -132,6 +133,8 @@ if not os.path.exists(dirResultado): # Cria a pasta de resultados se ela não ex
     os.mkdir(dirResultado)
 
 altPrint('='*60)
+altPrint(f'SESSÃO INICIADA EM {currDateTime}')
+altPrint('='*60)
 altPrint('Variáveis nessa sessão:')
 altPrint('='*60)
 altPrint(f'E-mail utilizado: {username}')
@@ -141,7 +144,6 @@ altPrint(f'Pasta de Resultado: {dirResultado}')
 altPrint(f'Pasta de Download: {dirDownload}')
 altPrint(f'Arquivo de log gerado em: {arquivoLog}')
 altPrint(f'Versão do Selenium Webdriver: {webdriver.__version__}')
-altPrint(f'Versão do Microsoft Edge: {get_file_version("C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe")}')
 altPrint('='*60)
 
 altPrint('Configurando as opções do Edge: ')
@@ -363,7 +365,7 @@ if os.path.exists(nomeNovoBase):
     #     else:
     #         nomeNovo = f'{dirResultado}\\Planos de Ação {currDate} ({i}).{extensaoArquivo}'
     #         sair = True
-    
+
 else:
     nomeNovo = nomeNovoBase
     
