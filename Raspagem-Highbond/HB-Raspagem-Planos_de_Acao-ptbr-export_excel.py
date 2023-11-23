@@ -291,7 +291,7 @@ try:
     # Todo esse bloco foi construído para os botões do menu de exportação CSV, mas podem ser facilmente trocados para as outras opções
     # Se esse bloco for comentado ou removido, a exportação ainda acontecerá, porém com o padrão que estiver no momento da execução
     # ================================================================================================================================
-    time.sleep(5)
+    time.sleep(2)
     
     # Exemplo de clique no botão, caso a opção esteja desmarcada:
     # toggle1 = objNavigator.find_element(By.XPATH, "//div[@class='optionListMain']/div[1]/*//*[@id='toggle']") # Botão de Manter Formatação
@@ -344,7 +344,9 @@ dirDownloadRec = f'{dirDownload}\\*'
 arquivosBaixados = glob.glob(dirDownloadRec)
 ultimoArquivoBaixado = max(arquivosBaixados, key=os.path.getctime)
 
+# -1, indica que o último valor da lista será obtido, indpendente da quantidade de itens.
 arquivoOrigem = os.path.basename(ultimoArquivoBaixado).split('/')[-1]
+# Independete do que for solicitado no download (csv, pdf, xlsx etc.), o sistema vai respeitar a extensão do arquivo ao renomear
 extensaoArquivo = arquivoOrigem.split('.')[-1]
 
 nomeAntigo = f'{dirResultado}\\{arquivoOrigem}'
