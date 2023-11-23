@@ -2,7 +2,7 @@
 # ################ BIBLIOTECAS ###############
 # ############################################
 
-# import logging
+import logging
 import time # Para aguardar o download antes de fechar
 import getpass as gp # Para pegar a senha do usuário (não funciona no robô Highbond)
 import datetime as dt # Para pegar a data atual
