@@ -2,6 +2,8 @@
 # ################ BIBLIOTECAS ###############
 # ############################################
 
+from classes.Print2 import Print2
+
 import logging
 import time # Para aguardar o download antes de fechar
 import getpass as gp # Para pegar a senha do usuário (não funciona no robô Highbond)
@@ -10,7 +12,7 @@ import sys # Para retornar 0 na saída
 import glob # para pegar o arquivo mais novo na pasta (ainda não implementado)
 import os # para alterar os arquivos baixados (ainda não implementado)
 import win32api # para pegar a propriedade de versão de arquivos (Especificamente para o Edge)
-import shutil # para copiar o arquivo de resultado
+import shutil # para copiar o arquivo de resultado7
 from selenium import webdriver # Para iniciar o navegador e a navegação
 from selenium.webdriver.common.by import By # Coleção de métodos para encontrar os webelements
 from selenium.webdriver.common.action_chains import ActionChains # Para utilizar ações complexas como double_click e mouse_over
@@ -108,13 +110,6 @@ class Print2:
 # #########################################
 # ################ FUNÇÕES ################
 # #########################################
-
-def get_file_version(path): # Pega a propriedade de versão de um arquivo executável
-    info = win32api.GetFileVersionInfo(path, '\\')
-    ms = info['FileVersionMS']
-    ls = info['FileVersionLS']
-    version = f'{win32api.HIWORD(ms)}.{win32api.LOWORD(ms)}.{win32api.HIWORD(ls)}.{win32api.LOWORD(ls)}'
-    return version
 
 print2 = Print2()
 print2.log_file = arquivoLog # Define o arquivo de log no output

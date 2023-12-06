@@ -1,5 +1,5 @@
 class Print2:
-    def __init__(self, log_file = 'Print2.log'):
+    def __init__(self, log_file = 'print2Class_DefaultLog.log'):
         self.log_file = log_file
 
     def print_and_log(self, data_to_print):
@@ -49,7 +49,3 @@ class Print2:
                         file.close()
         except Exception as Exp:
             print(f'Erro para logar os dados {Exp}')
-
-print2 = Print2()
-print2.log_file = 'teste.log'
-print2.print_and_log('teste')
