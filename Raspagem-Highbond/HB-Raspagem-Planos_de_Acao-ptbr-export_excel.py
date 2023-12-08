@@ -11,7 +11,6 @@ import datetime as dt # Para pegar a data atual
 import sys # Para retornar 0 na saída
 import glob # para pegar o arquivo mais novo na pasta (ainda não implementado)
 import os # para alterar os arquivos baixados (ainda não implementado)
-import win32api # para pegar a propriedade de versão de arquivos (Especificamente para o Edge)
 import shutil # para copiar o arquivo de resultado7
 from selenium import webdriver # Para iniciar o navegador e a navegação
 from selenium.webdriver.common.by import By # Coleção de métodos para encontrar os webelements
@@ -56,7 +55,7 @@ dirResultado = f'{pasta_raiz}Resultado'
 # #########################################
 
 class Print2:
-    def __init__(self, log_file = 'print2Class_DefaultLog.log'):
+    def __init__(self, log_file = 'DefaultLog.log'):
         self.log_file = log_file
 
     def print_and_log(self, data_to_print):
@@ -65,27 +64,18 @@ class Print2:
         
         log_file = self.log_file
 
-        if os.path.exists(log_file):
-           mode = 'a'
-        else:
-           mode = 'w'
-
-        if type(data_to_print) != list:
+        if not isinstance(data_to_print, list):
            data_to_print = [data_to_print]
         
         dateAndTime = dt.datetime.now()
         logTime = dateAndTime.strftime('%d-%m-%Y %H:%M:%S')
 
         try:
-            with open(log_file, mode, encoding='UTF-8') as file:
-                if mode == 'w':
-                   texto = f'LOG GERADO PELO ROBÔ PYTHON NO DIA E HORA: {dateAndTime.strftime("%d-%m-%Y")}'
-                   print(texto)
-                   file.write(texto)
-
-                for data in data_to_print:
-                    texto = f'{logTime}: {data}'
-                    if file.closed:
+            if os.path.exists(log_file) and os.path.getsize(log_file) != 0:
+                mode = 'a'
+                with open(log_file, mode, encoding='UTF-8') as file:
+                    for data in data_to_print:
+                        texto = f'{logTime}: {data}'
                         with open(log_file, 'a', encoding='UTF-8') as file:
 
                             print(texto)
@@ -94,16 +84,23 @@ class Print2:
                                 file.write('\n' + texto)
                             else:
                                 print("Tipo não suportado. Somente texto é suportado.")
-                            file.close()            
-                    else:
-                        
-                        print(texto)
+            else:
+                mode = 'w'
+                with open(log_file, mode, encoding='UTF-8') as file:
+                    texto = f'LOG GERADO PELO ROBÔ PYTHON NO DIA E HORA: {dateAndTime.strftime("%d-%m-%Y")}'
+                    print(texto)
+                    file.write(texto)
 
-                        if isinstance(data, str):
-                            file.write('\n' + texto)
-                        else:
-                            print("Tipo não suportado. Somente texto é suportado.")
-                        file.close()
+                    for data in data_to_print:
+                        texto = f'{logTime}: {data}'
+                        with open(log_file, 'a', encoding='UTF-8') as file:
+
+                            print(texto)
+
+                            if isinstance(data, str):
+                                file.write('\n' + texto)
+                            else:
+                                print("Tipo não suportado. Somente texto é suportado.", file=sys.stderr)
         except Exception as Exp:
             print(f'Erro para logar os dados {Exp}')
 
