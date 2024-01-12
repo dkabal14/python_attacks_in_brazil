@@ -55,14 +55,16 @@ dirResultado = f'{pasta_raiz}Resultado'
 # #########################################
 
 class Print2:
-    def __init__(self, log_file = 'DefaultLog.log'):
+    def __init__(self, log_file = 'DefaultLog.log', encoding = 'UTF-8'):
         self.log_file = log_file
+        self.enconding = encoding
 
     def print_and_log(self, data_to_print):
         import datetime as dt
         import os
         
         log_file = self.log_file
+        encoding = self.enconding
 
         if not isinstance(data_to_print, list):
            data_to_print = [data_to_print]
@@ -73,10 +75,10 @@ class Print2:
         try:
             if os.path.exists(log_file) and os.path.getsize(log_file) != 0:
                 mode = 'a'
-                with open(log_file, mode, encoding='UTF-8') as file:
+                with open(log_file, mode, encoding=encoding) as file:
                     for data in data_to_print:
                         texto = f'{logTime}: {data}'
-                        with open(log_file, 'a', encoding='UTF-8') as file:
+                        with open(log_file, 'a', encoding=encoding) as file:
 
                             print(texto)
 
@@ -86,14 +88,14 @@ class Print2:
                                 print("Tipo não suportado. Somente texto é suportado.")
             else:
                 mode = 'w'
-                with open(log_file, mode, encoding='UTF-8') as file:
+                with open(log_file, mode, encoding=encoding) as file:
                     texto = f'LOG GERADO PELO ROBÔ PYTHON NO DIA E HORA: {dateAndTime.strftime("%d-%m-%Y")}'
                     print(texto)
                     file.write(texto)
 
                     for data in data_to_print:
                         texto = f'{logTime}: {data}'
-                        with open(log_file, 'a', encoding='UTF-8') as file:
+                        with open(log_file, 'a', encoding=encoding) as file:
 
                             print(texto)
 
